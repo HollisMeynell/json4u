@@ -1,6 +1,5 @@
 import NextBundleAnalyzer from "@next/bundle-analyzer";
 import createMDX from "@next/mdx";
-import { withSentryConfig } from "@sentry/nextjs";
 import createJiti from "jiti";
 import createNextIntlPlugin from "next-intl/plugin";
 import { fileURLToPath } from "node:url";
@@ -13,22 +12,17 @@ import path from "path";
 const jiti = createJiti(fileURLToPath(import.meta.url));
 jiti("./src/lib/env");
 
-const isDev = process.env.NODE_ENV === "development";
-const isCN = /\.cn(:3000)?$/.test(process.env.NEXT_PUBLIC_APP_URL);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   // not affect auto batching, but it may cause console.log output three times: https://github.com/facebook/react/issues/24570
   reactStrictMode: true,
+  output: 'export',
   swcMinify: true,
   poweredByHeader: false,
-  output: isCN ? "standalone" : undefined,
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   experimental: {
-    serverActions: {
-      allowedOrigins: ["json4u.com", "*.json4u.com", "json4u.cn", "*.json4u.cn"],
-    },
     optimizePackageImports: [
       "react-use",
       "@next/mdx",
@@ -36,12 +30,6 @@ const nextConfig = {
       "lucide-react",
       "monaco-editor",
       "@xyflow/react",
-      "@supabase/auth-ui-react",
-      "@supabase/auth-ui-shared",
-      "@supabase/supabase-js",
-      "@sentry/react",
-      "@sentry/nextjs",
-      "@sentry/utils",
       "zod",
       "usehooks-ts",
     ],
@@ -70,41 +58,4 @@ const withBundleAnalyzer = NextBundleAnalyzer({
 
 const config = withBundleAnalyzer(withNextIntl(withMDX(nextConfig)));
 
-export default withSentryConfig(config, {
-  // For all available options, see:
-  // https://github.com/getsentry/sentry-webpack-plugin#options
-  org: "loggerhead",
-  project: "json4u",
-  enable: !isDev,
-
-  // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
-
-  // For all available options, see:
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-  ignore: [
-    "__tests__",
-    "e2e",
-    "dist",
-    "node_modules",
-    "public",
-    ".next",
-    ".vercel",
-    ".vscode",
-    ".idea",
-    ".gitignore",
-    ".DS_Store",
-    "*.log",
-    ".env.*",
-    "sentry.*.config.js",
-    "README.md",
-    "yarn.lock",
-  ],
-  // Upload a larger set of source maps for prettier stack traces (increases build time)
-  widenClientFileUpload: true,
-  // Transpiles SDK to be compatible with IE11 (increases bundle size)
-  transpileClientSDK: false,
-  telemetry: false,
-  // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
-});
+export default config;

@@ -1,5 +1,4 @@
-import { reportStatistics } from "@/app/actions";
-import { env, isCN, isDev, type Statistics, type StatisticsKeys } from "@/lib/env";
+import { env, type Statistics, type StatisticsKeys } from "@/lib/env";
 import type { SubscriptionType } from "@/lib/shop/types";
 import { supabase } from "@/lib/supabase/client";
 import { OrderSchema, type Order } from "@/lib/supabase/table.types";
@@ -56,12 +55,8 @@ export const useUserStore = create<UserState>()((set, get) => ({
 
   count(key: StatisticsKeys) {
     const { fallbackKey, statistics, isPremium } = get();
-    statistics[key] += 1;
-
-    // can't connect to supabase in China, so disable the function temporarily
-    if (!(isPremium() || isDev || isCN)) {
-      reportStatistics(fallbackKey, key);
-    }
+    // 这还能收钱, 都是前端功能
+    // statistics[key] += 1;
 
     sendGAEvent("event", "cmd_statistics", { name: key });
     set({ statistics });

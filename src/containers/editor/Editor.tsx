@@ -21,9 +21,14 @@ export default function Editor({ kind, ...props }: EditorProps) {
   const translations = useTranslations();
   const setEditor = useEditorStore((state) => state.setEditor);
   const setTranslations = useEditorStore((state) => state.setTranslations);
+  const setCommandMode = useStatusStore((state) => state.setCommandMode);
 
   useDisplayExample();
   useRevealNode();
+
+  useEffect(() => {
+    setCommandMode('jq');
+  }, []);
 
   return (
     <MonacoEditor
@@ -86,53 +91,7 @@ export function useRevealNode() {
   }, [editor, revealPosition, isNeedReveal]);
 }
 
-const exampleData = `{
-  "Aidan Gillen": {
-      "array": [
-          "Game of Thron\\"es",
-          "The Wire"
-      ],
-      "string": "some string",
-      "int": 2,
-      "aboolean": true,
-      "boolean": true,
-      "null": null,
-      "a_null": null,
-      "another_null": "null check",
-      "object": {
-          "foo": "bar",
-          "object1": {
-              "new prop1": "new prop value"
-          },
-          "object2": {
-              "new prop1": "new prop value"
-          },
-          "object3": {
-              "new prop1": "new prop value"
-          },
-          "object4": {
-              "new prop1": "new prop value"
-          }
-      }
-  },
-  "Amy Ryan": {
-      "one": "In Treatment",
-      "two": "The Wire"
-  },
-  "Annie Fitzgerald": [
-      "Big Love",
-      "True Blood"
-  ],
-  "Anwan Glover": [
-      "Treme",
-      "The Wire"
-  ],
-  "Alexander Skarsgard": [
-      "Generation Kill",
-      "True Blood"
-  ],
-  "Clarke Peters": null
-}`;
+const exampleData = `{"json": true}`;
 
 function useDisplayExample() {
   const editor = useEditor("main");

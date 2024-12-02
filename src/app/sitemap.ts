@@ -3,7 +3,7 @@ import { env } from "@/lib/env";
 
 // https://next-intl-docs.vercel.app/docs/environments/metadata-route-handlers
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [getEntry("/"), getEntry("/editor"), getEntry("/changelog"), getEntry("/terms"), getEntry("/privacy")];
+  return [getEntry("/"), getEntry("/editor")];
 }
 
 function getEntry(pathname: string) {
@@ -12,8 +12,8 @@ function getEntry(pathname: string) {
     lastModified: new Date(),
     alternates: {
       languages: {
-        en: getUrl(pathname, "https://json4u.com"),
-        zh: getUrl(pathname, "https://json4u.cn"),
+        en: getUrl(pathname),
+        zh: getUrl(pathname),
       },
     },
   };

@@ -1,12 +1,9 @@
 "use client";
 
-import { getCustomerPortalURL } from "@/app/actions";
 import LogoutButton from "@/components/LogoutButton";
-import { Button } from "@/components/ui/button";
 import { MessageKey } from "@/global";
-import { isCN } from "@/lib/env";
 import { Order } from "@/lib/supabase/table.types";
-import { cn, dateToYYYYMMDD } from "@/lib/utils";
+import { dateToYYYYMMDD } from "@/lib/utils";
 import { useUserStore } from "@/stores/userStore";
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
@@ -52,15 +49,6 @@ export default function AccountPanel() {
         </span>
         <PremiumStatus activeOrder={activeOrder} />
       </div>
-      <Button
-        className={cn("justify-start", isCN && "hidden")}
-        onClick={async () => {
-          const url = await getCustomerPortalURL();
-          url && window.open(url, "_blank");
-        }}
-      >
-        {t("manage_plan")}
-      </Button>
       <LogoutButton />
     </div>
   );
